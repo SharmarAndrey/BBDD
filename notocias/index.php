@@ -34,12 +34,15 @@ $noticias = $stmt->fetchAll(PDO::FETCH_ASSOC);
    </style>
 </head>
 <body>
+	<a href="anadir_noticia.php" style="padding:10px 15px; background:#4CAF50; color:white; border-radius:5px; text-decoration:none;">➕ Añadir Noticia</a>
+
    <h1>Últimas noticias</h1>
    <?php foreach ($noticias as $noticia): ?>
        <div class="noticia">
            <h2><?= htmlspecialchars($noticia['titulo']) ?></h2>
            <small>Categoría: <?= htmlspecialchars($noticia['categoria']) ?> | Fecha: <?= $noticia['fecha'] ?></small><br>
            <a href="noticia.php?id=<?= $noticia['id'] ?>">Ver más</a>
+		       <a href="eliminar_noticia.php?id=<?= $noticia['id'] ?>" onclick="return confirm('¿Estás seguro de que quieres eliminar esta noticia?');" style="color:red; margin-left:10px;">🗑 Eliminar</a>
        </div>
    <?php endforeach; ?>
 </body>
