@@ -7,6 +7,7 @@ $noticia = $stmt->fetch(PDO::FETCH_ASSOC);
 
 require_once "partials/header.php";
 ?>
+
 <main>
 <div class="tarjeta">
     <?php if ($noticia): ?>
@@ -15,6 +16,9 @@ require_once "partials/header.php";
             <small><strong>Categoría:</strong> <?= htmlspecialchars($noticia['categoria']) ?> &nbsp; | &nbsp;
             <strong>Fecha:</strong> <?= $noticia['fecha'] ?></small>
         </div>
+        <?php if (!empty($noticia['imagen'])): ?>
+            <img src="<?= htmlspecialchars($noticia['imagen']) ?>" alt="Imagen de la noticia" style="max-width:400px;">
+        <?php endif; ?>
         <p class="contenido"><?= nl2br(htmlspecialchars($noticia['descripcion'])) ?></p>
         <div class="meta">
             <small><strong>Publicado por:</strong> <?= $noticia['user_id'] ?></small>
@@ -26,4 +30,5 @@ require_once "partials/header.php";
     <?php endif; ?>
 </div>
 </main>
+
 <?php require_once "partials/footer.php"; ?>

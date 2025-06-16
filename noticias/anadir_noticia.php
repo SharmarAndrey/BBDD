@@ -20,10 +20,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descripcionErr = "Tienes que introducir una descripción";
     }
 
-    if (!$tituloErr && !$categoriaErr && !$descripcionErr) {
+    // Manejo de imagen
+    $imagen = "img/default.jpg"; // valor por defecto
+    if (isset($_FILES["file"]) && $_FILES["file"]["error"] == UPLOAD_ERR_OK) {
+        $uploadDir = "img/";
+        $fileName = basename($_FILES["file"]["name"]);
+        $imagePath = $uploadDir . $fileName;
+        if (move_uploaded_file($_FILES["file"]["tmp_name"], $imagePath)) {
+            $imagen = $imagePath;
+        } else {
+            $insertaErr = "❌ Error subiendo la imagen.";
+        }
+    }
+
+    if (!$tituloErr && !$categoriaErr && !$descripcionErr && !$insertaErr) {
         try {
-            $stmt = $pdo->prepare("INSERT INTO noticias (titulo, descripcion, categoria, user_id) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$titulo, $descripcion, $categoria, $user_id]);
+            $stmt = $pdo->prepare("INSERT INTO noticias (titulo, descripcion, categoria, user_id, imagen) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$titulo, $descripcion, $categoria, $user_id, $imagen]);
             $insertaSuccess = "✅ Noticia insertada con éxito";
             $titulo = $categoria = $descripcion = "";
         } catch (Exception $e) {
@@ -34,12 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once "partials/header.php";
 ?>
+
 <main>
 <div id="main">
     <h1 class="success"><?= $insertaSuccess ?></h1>
     <h1 class="error"><?= $insertaErr ?></h1>
     <h1>Añadir Noticia</h1>
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
         <label>Título:</label>
         <input type="text" name="titulo" value="<?= htmlspecialchars($titulo) ?>">
         <span class="error"><?= $tituloErr ?></span>
@@ -55,6 +69,9 @@ require_once "partials/header.php";
         <label>Descripción:</label>
         <textarea name="descripcion"><?= htmlspecialchars($descripcion) ?></textarea>
         <span class="error"><?= $descripcionErr ?></span>
+
+        <label>Imagen:</label>
+        <input type="file" name="file">
 
         <input type="submit" value="Enviar">
     </form>
