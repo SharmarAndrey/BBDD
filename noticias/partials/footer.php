@@ -1,8 +1,6 @@
 </main>
 <footer>
-    <a href="index.php">Inicio</a> | 
-    <a href="anadir_noticia.php">Añadir Noticia</a>
-    <div class="copyright">&copy; 2025 Curso NAscor</div>
+  <p>© <?= date('Y') ?> Curso NAscor</p>
 </footer>
 </body>
 </html>
