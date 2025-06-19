@@ -1,6 +1,7 @@
 <?php
 require_once "conexion.php";
 $id = $_GET['id'] ?? null;
+
 if (!$id) {
     die("❌ ID faltante");
 }
@@ -15,7 +16,6 @@ if (!$noticia) {
 $titulo = $noticia['titulo'];
 $categoria = $noticia['categoria'];
 $descripcion = $noticia['descripcion'];
-$user_id = $noticia['user_id'];
 $updateSuccess = $updateErr = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -27,6 +27,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $stmt = $pdo->prepare("UPDATE noticias SET titulo=?, descripcion=?, categoria=? WHERE id=?");
             $stmt->execute([$titulo, $descripcion, $categoria, $id]);
+
+            // Si hay nueva imagen
+            if (isset($_FILES["file"]) && $_FILES["file"]["error"] == UPLOAD_ERR_OK) {
+                $uploadDir = "img/";
+                $extension = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
+                $allowed = ['jpg','jpeg','png','gif'];
+                if (in_array($extension, $allowed)) {
+                    $fileName = uniqid() . '.' . $extension;
+                    $newImagePath = $uploadDir . $fileName;
+                    if (move_uploaded_file($_FILES["file"]["tmp_name"], $newImagePath)) {
+                        if ($noticia['imagen'] !== "img/default.jpg" && file_exists($noticia['imagen'])) {
+                            unlink($noticia['imagen']);
+                        }
+                        $stmt = $pdo->prepare("UPDATE noticias SET imagen=? WHERE id=?");
+                        $stmt->execute([$newImagePath, $id]);
+                    }
+                }
+            }
+
             $updateSuccess = "✅ Noticia actualizada";
         } catch (Exception $e) {
             $updateErr = "❌ Error: " . $e->getMessage();
@@ -36,40 +55,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_once "partials/header.php";
 ?>
+
 <main>
-<div id="main">
+  <div id="main">
     <?php if ($updateSuccess): ?>
-        <p class="success"><?= $updateSuccess ?></p>
+      <p class="success"><?= $updateSuccess ?></p>
     <?php endif; ?>
     <?php if ($updateErr): ?>
-        <p class="error"><?= $updateErr ?></p>
+      <p class="error"><?= $updateErr ?></p>
     <?php endif; ?>
 
     <h1>Editar Noticia</h1>
 
-    <form method="POST">
-        <div class="form-group">
-            <label for="titulo">Título:</label>
-            <input type="text" id="titulo" name="titulo" value="<?= htmlspecialchars($titulo) ?>">
-        </div>
+    <form method="POST" enctype="multipart/form-data">
+  <label for="titulo">Título:</label>
+  <input type="text" id="titulo" name="titulo" value="<?= htmlspecialchars($titulo) ?>">
 
-        <div class="form-group">
-            <label for="categoria">Categoría:</label>
-            <select id="categoria" name="categoria">
-                <option value="Noticias" <?= $categoria == "Noticias" ? 'selected' : '' ?>>Noticias</option>
-                <option value="Deportes" <?= $categoria == "Deportes" ? 'selected' : '' ?>>Deportes</option>
-            </select>
-        </div>
+  <label for="categoria">Categoría:</label>
+  <select id="categoria" name="categoria">
+    <option value="Noticias" <?= $categoria == "Noticias" ? 'selected' : '' ?>>Noticias</option>
+    <option value="Deportes" <?= $categoria == "Deportes" ? 'selected' : '' ?>>Deportes</option>
+  </select>
 
-        <div class="form-group">
-            <label for="descripcion">Descripción:</label>
-            <textarea id="descripcion" name="descripcion"><?= htmlspecialchars($descripcion) ?></textarea>
-        </div>
+  <label for="descripcion">Descripción:</label>
+  <textarea id="descripcion" name="descripcion"><?= htmlspecialchars($descripcion) ?></textarea>
 
-        <input type="submit" value="Actualizar">
-        <a href="index.php" class="button">← Volver</a>
-    </form>
-</div>
+  <label>Nueva Imagen:</label>
+  <input type="file" name="file">
+
+  <button type="submit" class="btn">Actualizar</button>
+  <a href="index.php" class="btn">← Volver</a>
+</form>
+
+  </div>
 </main>
 
 <?php require_once "partials/footer.php"; ?>

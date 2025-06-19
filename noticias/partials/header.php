@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Noticias</title>
-    <link rel="stylesheet" href="/BBDD/noticias/css/style.css">
-	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-	<div class="wrapper">
 <header>
     <nav>
         <ul>
-            <li><a href="/BBDD/noticias/index.php">Inicio</a></li>
-            <li><a href="/BBDD/noticias/anadir_noticia.php">Añadir Noticia</a></li>
+            <li><a href="index.php">Inicio</a></li>
+            <li><a href="anadir_noticia.php">Añadir Noticia</a></li>
         </ul>
     </nav>
 </header>
+<main class="container">
