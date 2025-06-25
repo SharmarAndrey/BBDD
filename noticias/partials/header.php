@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Noticias</title>
-<link rel="stylesheet" href="css/style.css">
-
+    <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -26,3 +25,4 @@
     </nav>
 </header>
 <main class="container">
+

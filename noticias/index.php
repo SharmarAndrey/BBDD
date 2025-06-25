@@ -1,7 +1,7 @@
 <?php
 require_once "conexion.php";
 require_once "partials/header.php";
-
+/* var_dump($_SESSION); */
 // Number per page
 $num = 5;
 $comienzo = isset($_GET['comienzo']) ? (int)$_GET['comienzo'] : 0;
