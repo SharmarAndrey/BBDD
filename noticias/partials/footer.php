@@ -1,6 +1,6 @@
 </main>
 <footer>
-  <p>© <?= date('Y') ?> Curso NAscor</p>
+    <p>© <?= date('Y') ?> Curso NAscor</p>
 </footer>
 </body>
 </html>

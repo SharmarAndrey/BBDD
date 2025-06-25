@@ -1,17 +1,27 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Noticias</title>
-    <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 <header>
     <nav>
-        <ul>
+        <ul class="nav-list">
             <li><a href="index.php">Inicio</a></li>
             <li><a href="anadir_noticia.php">Añadir Noticia</a></li>
+            <li class="nav-user">
+                <?php if (isset($_SESSION['user'])): ?>
+                    Bienvenido, <?= htmlspecialchars($_SESSION['user']) ?> |
+                    <a href="logout.php">Cerrar sesión</a>
+                <?php else: ?>
+                    <a href="login.html">Iniciar sesión</a>
+                <?php endif; ?>
+            </li>
         </ul>
     </nav>
 </header>
