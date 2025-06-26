@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_FILES["file"]) && $_FILES["file"]["error"] == UPLOAD_ERR_OK) {
             $uploadDir = "img/";
             $ext = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
-            if (in_array($ext, ['jpg','jpeg','png','gif'])) {
+            if (in_array($ext, ['jpg','jpeg','png','gif', 'avif', 'webp', 'svg'])) {
                 $fileName = uniqid() . '.' . $ext;
                 $path = $uploadDir . $fileName;
                 if (move_uploaded_file($_FILES["file"]["tmp_name"], $path)) {

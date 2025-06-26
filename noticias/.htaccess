@@ -1,0 +1,3 @@
+AddType image/avif .avif
+AddType image/avif .svg
+AddType image/avif .webp

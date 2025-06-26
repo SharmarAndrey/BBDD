@@ -1,14 +1,20 @@
 <?php
+session_start();
 require_once "conexion.php";
 require_once "partials/header.php";
 
-// Get all categories
+// Получаем ID текущего пользователя по имени из сессии
+$userName = $_SESSION['user'] ?? null;
+$stmtUser = $pdo->prepare("SELECT id FROM usuarios WHERE nombre = ?");
+$stmtUser->execute([$userName]);
+$user_id = $stmtUser->fetchColumn();
+
+// Получить категории
 $stmt = $pdo->query("SELECT * FROM categorias ORDER BY nombre");
 $categorias = $stmt->fetchAll();
 
 $titulo = $descripcion = $nuevaCategoria = "";
 $categoria_id = "";
-$user_id = $_POST['user_id'] ?? 3;
 $success = $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $descripcion = trim($_POST['descripcion']);
     $imagen = "img/default.jpg";
 
-    // If the new category of news — create it and receive ID
+    // Si hay nueva categoría
     if ($nuevaCategoria) {
         $stmt = $pdo->prepare("SELECT id FROM categorias WHERE nombre = ?");
         $stmt->execute([$nuevaCategoria]);
@@ -33,11 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$titulo || !$categoria_id || !$descripcion) {
         $error = "❌ Todos los campos son obligatorios";
     } else {
-        // Loading the image
+        // Cargar imagen
         if (isset($_FILES["file"]) && $_FILES["file"]["error"] == UPLOAD_ERR_OK) {
             $uploadDir = "img/";
             $ext = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
-            if (in_array($ext, ['jpg','jpeg','png','gif'])) {
+            if (in_array($ext, ['jpg','jpeg','png','gif', 'avif', 'webp', 'svg'])) {
                 $fileName = uniqid() . '.' . $ext;
                 $path = $uploadDir . $fileName;
                 if (move_uploaded_file($_FILES["file"]["tmp_name"], $path)) {
@@ -84,11 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="file" name="file">
 
     <label>Usuario:</label>
-    <select name="user_id">
-        <option value="1" <?= $user_id == 1 ? 'selected' : '' ?>>Usuario 1</option>
-        <option value="2" <?= $user_id == 2 ? 'selected' : '' ?>>Usuario 2</option>
-        <option value="3" <?= $user_id == 3 ? 'selected' : '' ?>>Usuario 3</option>
-    </select>
+    <input type="text" value="<?= htmlspecialchars($userName) ?>" disabled>
+    <input type="hidden" name="user_id" value="<?= $user_id ?>">
 
     <button type="submit" class="btn">Añadir</button>
     <a href="index.php" class="btn">← Volver</a>
