@@ -2,6 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registro de Usuario</title>
     <link rel="stylesheet" href="css/style.css" />
     <link
@@ -35,7 +36,9 @@
         <input type="password" name="password" id="password" required />
 
         <button type="submit" class="btn btn-success">Registrarse</button>
-        <a href="login.html">¿Ya tienes cuenta? Inicia sesión</a>
+        <a href="login.html" style="margin-left: 15px"
+          >¿Ya tienes cuenta? Inicia sesión</a
+        >
       </form>
     </main>
 
@@ -44,7 +47,6 @@
     </footer>
 
     <script>
-      // Mostrar error si viene por URL
       const params = new URLSearchParams(window.location.search);
       const error = params.get("error");
       if (error) {
@@ -52,7 +54,6 @@
           decodeURIComponent(error);
       }
 
-      // Mostrar año actual
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
   </body>

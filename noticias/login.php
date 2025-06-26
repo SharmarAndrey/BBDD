@@ -3,20 +3,23 @@
 session_start();
 require_once "conexion.php";
 
-$email = $_POST['email'] ?? '';
+$email = trim($_POST['email'] ?? '');
 $password = $_POST['password'] ?? '';
 
-// Buscar usuario por email
+if (!$email || !$password) {
+    header("Location: login.html?error=" . urlencode("Todos los campos son obligatorios"));
+    exit;
+}
+
 $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ?");
 $stmt->execute([$email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Verificar existencia y contraseña
 if ($user && password_verify($password, $user['password'])) {
-    $_SESSION['user'] = $user['nombre']; // или $user['email']
+    $_SESSION['user'] = $user['nombre'];
     header("Location: index.php");
     exit;
 } else {
-    echo "❌ Email o contraseña incorrectos.";
-    echo '<br><a href="login.html">← Volver</a>';
+    header("Location: login.html?error=" . urlencode("❌ Email o contraseña incorrectos"));
+    exit;
 }

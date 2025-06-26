@@ -2,18 +2,56 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar sesión</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <h1>Iniciar sesión</h1>
-    <form action="login.php" method="POST">
-      <label>Email:</label>
-      <input type="email" name="email" required /><br />
+    <header>
+      <nav>
+        <ul class="nav-list">
+          <li><a href="index.php">Inicio</a></li>
+          <li><a href="registro.html">Registrarse</a></li>
+        </ul>
+      </nav>
+    </header>
 
-      <label>Contraseña:</label>
-      <input type="password" name="password" required /><br />
+    <main class="container">
+      <h1>Iniciar sesión</h1>
 
-      <input type="submit" value="Entrar" />
-    </form>
+      <div id="error-container" class="error"></div>
+
+      <form action="login.php" method="POST">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required />
+
+        <label for="password">Contraseña:</label>
+        <input type="password" name="password" id="password" required />
+
+        <button type="submit" class="btn btn-success">Entrar</button>
+        <a href="registro.html" style="margin-left: 15px"
+          >¿No tienes cuenta? Regístrate</a
+        >
+      </form>
+    </main>
+
+    <footer>
+      <p>© <span id="year"></span> Curso NAscor</p>
+    </footer>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const error = params.get("error");
+      if (error) {
+        document.getElementById("error-container").textContent =
+          decodeURIComponent(error);
+      }
+
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
   </body>
 </html>

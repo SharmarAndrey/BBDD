@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_FILES["file"]) && $_FILES["file"]["error"] == UPLOAD_ERR_OK) {
             $uploadDir = "img/";
             $ext = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
-            if (in_array($ext, ['jpg','jpeg','png','gif','avif','webp','svg'])) {
+            if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'avif', 'webp', 'svg'])) {
                 $fileName = uniqid() . '.' . $ext;
                 $path = $uploadDir . $fileName;
                 if (move_uploaded_file($_FILES["file"]["tmp_name"], $path)) {
@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
+
         $success = "✅ Noticia actualizada";
     } else {
         $error = "❌ Todos los campos son obligatorios";
@@ -77,33 +78,39 @@ require_once "partials/header.php";
 ?>
 
 <h1>Editar Noticia</h1>
-<p class="success"><?= $success ?></p>
-<p class="error"><?= $error ?></p>
+
+<?php if ($success): ?>
+  <p class="success"><?= $success ?></p>
+<?php endif; ?>
+
+<?php if ($error): ?>
+  <p class="error"><?= $error ?></p>
+<?php endif; ?>
 
 <form method="POST" enctype="multipart/form-data">
-    <label>Título:</label>
-    <input type="text" name="titulo" value="<?= htmlspecialchars($titulo) ?>">
+  <label for="titulo">Título:</label>
+  <input type="text" name="titulo" id="titulo" value="<?= htmlspecialchars($titulo) ?>">
 
-    <label>Categoría existente:</label>
-    <select name="categoria_id">
-        <?php foreach ($categorias as $cat): ?>
-            <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $categoria_id ? 'selected' : '' ?>>
-                <?= htmlspecialchars($cat['nombre']) ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+  <label for="categoria_id">Categoría existente:</label>
+  <select name="categoria_id" id="categoria_id">
+    <?php foreach ($categorias as $cat): ?>
+      <option value="<?= $cat['id'] ?>" <?= $cat['id'] == $categoria_id ? 'selected' : '' ?>>
+        <?= htmlspecialchars($cat['nombre']) ?>
+      </option>
+    <?php endforeach; ?>
+  </select>
 
-    <label>O nueva categoría:</label>
-    <input type="text" name="nueva_categoria">
+  <label for="nueva_categoria">O nueva categoría:</label>
+  <input type="text" name="nueva_categoria" id="nueva_categoria">
 
-    <label>Descripción:</label>
-    <textarea name="descripcion"><?= htmlspecialchars($descripcion) ?></textarea>
+  <label for="descripcion">Descripción:</label>
+  <textarea name="descripcion" id="descripcion"><?= htmlspecialchars($descripcion) ?></textarea>
 
-    <label>Nueva Imagen:</label>
-    <input type="file" name="file">
+  <label for="file">Nueva Imagen:</label>
+  <input type="file" name="file" id="file">
 
-    <button type="submit" class="btn">Actualizar</button>
-    <a href="index.php" class="btn">← Volver</a>
+  <button type="submit" class="btn btn-success">Actualizar</button>
+  <a href="index.php" class="btn">← Volver</a>
 </form>
 
 <?php require_once "partials/footer.php"; ?>
