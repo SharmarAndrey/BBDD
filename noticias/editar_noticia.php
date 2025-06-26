@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once "conexion.php";
 
 $id = $_GET['id'] ?? null;
@@ -6,16 +7,20 @@ if (!$id) {
     die("ID faltante");
 }
 
-$stmt = $pdo->prepare("
-    SELECT n.*, c.nombre AS categoria 
-    FROM noticias n 
-    JOIN categorias c ON n.categoria_id = c.id 
-    WHERE n.id = ?
-");
+$userName = $_SESSION['user'] ?? null;
+$stmtUser = $pdo->prepare("SELECT id FROM usuarios WHERE nombre = ?");
+$stmtUser->execute([$userName]);
+$currentUserId = $stmtUser->fetchColumn();
+
+$stmt = $pdo->prepare("SELECT * FROM noticias WHERE id = ?");
 $stmt->execute([$id]);
 $noticia = $stmt->fetch(PDO::FETCH_ASSOC);
+
 if (!$noticia) {
     die("Noticia no encontrada");
+}
+if ($noticia['user_id'] != $currentUserId) {
+    die("⛔ No tienes permiso para editar esta noticia.");
 }
 
 $titulo = $noticia['titulo'];
@@ -23,7 +28,6 @@ $categoria_id = $noticia['categoria_id'];
 $descripcion = $noticia['descripcion'];
 $success = $error = "";
 
-// All categories
 $stmt = $pdo->query("SELECT * FROM categorias ORDER BY nombre");
 $categorias = $stmt->fetchAll();
 
@@ -51,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_FILES["file"]) && $_FILES["file"]["error"] == UPLOAD_ERR_OK) {
             $uploadDir = "img/";
             $ext = strtolower(pathinfo($_FILES["file"]["name"], PATHINFO_EXTENSION));
-            if (in_array($ext, ['jpg','jpeg','png','gif', 'avif', 'webp', 'svg'])) {
+            if (in_array($ext, ['jpg','jpeg','png','gif','avif','webp','svg'])) {
                 $fileName = uniqid() . '.' . $ext;
                 $path = $uploadDir . $fileName;
                 if (move_uploaded_file($_FILES["file"]["tmp_name"], $path)) {
@@ -63,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
-
         $success = "✅ Noticia actualizada";
     } else {
         $error = "❌ Todos los campos son obligatorios";

@@ -1,15 +1,25 @@
 <?php
+session_start();
 require_once "conexion.php";
 require_once "partials/header.php";
-/* var_dump($_SESSION); */
-// Number per page
+
+$userName = $_SESSION['user'] ?? null;
+$currentUserId = null;
+
+if ($userName) {
+    $stmtUser = $pdo->prepare("SELECT id FROM usuarios WHERE nombre = ?");
+    $stmtUser->execute([$userName]);
+    $currentUserId = $stmtUser->fetchColumn();
+}
+
+// Paginación
 $num = 5;
 $comienzo = isset($_GET['comienzo']) ? (int)$_GET['comienzo'] : 0;
 $orden = $_GET['orden'] ?? 'fecha';
 $ordenValido = in_array($orden, ['fecha', 'categoria', 'titulo']) ? $orden : 'fecha';
 $categoria = $_GET['categoria'] ?? null;
 
-// We get the total amount
+// Total de noticias
 if ($categoria) {
     $stmtTotal = $pdo->prepare("
         SELECT COUNT(*)
@@ -23,7 +33,7 @@ if ($categoria) {
     $total = $pdo->query("SELECT COUNT(*) FROM noticias")->fetchColumn();
 }
 
-// Prepare WHERE and parameters
+// Filtro por categoría
 $where = "";
 $params = [];
 if ($categoria) {
@@ -31,7 +41,7 @@ if ($categoria) {
     $params[] = $categoria;
 }
 
-// We prepare a request from Join
+// Obtener noticias
 $sql = "
     SELECT n.*, c.nombre AS categoria
     FROM noticias n
@@ -42,8 +52,6 @@ $sql = "
 ";
 
 $stmt = $pdo->prepare($sql);
-
-// We tie the parameters
 foreach ($params as $i => $param) {
     $stmt->bindValue($i + 1, $param);
 }
@@ -86,8 +94,11 @@ $noticias = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 <div class="actions">
                     <a href="noticia.php?id=<?= $noticia['id'] ?>" class="btn">Ver más</a>
-                    <a href="editar_noticia.php?id=<?= $noticia['id'] ?>" class="btn btn-secondary btn-small">Editar</a>
-                    <a href="eliminar_noticia.php?id=<?= $noticia['id'] ?>" class="btn btn-danger btn-small" onclick="return confirm('¿Seguro que deseas eliminar?');">Eliminar</a>
+
+                    <?php if ($currentUserId && $noticia['user_id'] == $currentUserId): ?>
+                        <a href="editar_noticia.php?id=<?= $noticia['id'] ?>" class="btn btn-secondary btn-small">Editar</a>
+                        <a href="eliminar_noticia.php?id=<?= $noticia['id'] ?>" class="btn btn-danger btn-small" onclick="return confirm('¿Seguro que deseas eliminar?');">Eliminar</a>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -95,7 +106,9 @@ $noticias = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <p>No hay noticias aún.</p>
     <?php endif; ?>
 
-    <a href="anadir_noticia.php" class="add-card">+ Añadir Noticia</a>
+    <?php if ($currentUserId): ?>
+        <a href="anadir_noticia.php" class="add-card">+ Añadir Noticia</a>
+    <?php endif; ?>
 </div>
 
 <div class="pagination">
