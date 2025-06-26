@@ -6,12 +6,11 @@ require_once "partials/header.php";
 // Obtener ID de la noticia desde GET
 $id = $_GET['id'] ?? null;
 
-// Preparar consulta para obtener los datos de la noticia  su categoría н nombre del autor
+// Preparar consulta para obtener los datos de la noticia y su categoría
 $stmt = $pdo->prepare("
-   SELECT n.*, c.nombre AS categoria, u.nombre AS autor
+    SELECT n.*, c.nombre AS categoria 
     FROM noticias n 
     JOIN categorias c ON n.categoria_id = c.id 
-	JOIN usuarios u ON n.user_id = u.id
     WHERE n.id = ?
 ");
 $stmt->execute([$id]);
@@ -24,8 +23,7 @@ $noticia = $stmt->fetch();
     <h1><?= htmlspecialchars($noticia['titulo']) ?></h1>
     <small>
       Categoría: <strong><?= htmlspecialchars($noticia['categoria']) ?></strong> |
-      Fecha: <?= htmlspecialchars($noticia['fecha']) ?> |
-	  Autor: <strong><?= htmlspecialchars($noticia['autor']) ?></strong>
+      Fecha: <?= htmlspecialchars($noticia['fecha']) ?>
     </small>
 
 	 <!-- Mostrar imagen si existe en disco -->

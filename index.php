@@ -37,13 +37,12 @@ if ($categoria) {
     $params[] = $categoria;
 }
 
-// Consulta SQL para obtener noticias con JOIN para obtener nombre de categoría y nombre de usuario
+// Consulta SQL para obtener noticias con JOIN para obtener nombre de categoría
 $sql = "
-    SELECT n.*, c.nombre AS categoria, u.nombre AS autor
+    SELECT n.*, c.nombre AS categoria
     FROM noticias n
     LEFT JOIN categorias c ON n.categoria_id = c.id
-    LEFT JOIN usuarios u ON n.user_id = u.id
-	$where
+    $where
     ORDER BY $ordenValido DESC
     LIMIT ?, ?
 ";
@@ -102,7 +101,6 @@ if ($categoria) {
               <?= htmlspecialchars($noticia['categoria']) ?>
             </a> |
             Fecha: <?= htmlspecialchars($noticia['fecha']) ?>
-            Autor: <strong><?= htmlspecialchars($noticia['autor']) ?></strong>
           </p>
 
 		   <!-- Mostrar imagen si existe -->
