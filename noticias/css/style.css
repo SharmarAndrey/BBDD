@@ -55,8 +55,13 @@ h2 {
 =========================================== */
 
 header {
-	background: #1c2b4a;
-	padding: 18px 0;
+	background: linear-gradient(90deg, #1d2c4d, #203864);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+	border-radius: 0;
+	padding: 12px 0;
+	position: sticky;
+	top: 0;
+	z-index: 100;
 }
 
 nav ul {
@@ -72,15 +77,20 @@ nav li {
 }
 
 nav a {
-	color: #fff;
+	color: #f0f0f0;
 	text-decoration: none;
 	font-weight: 600;
-	font-size: 17px;
-	transition: color 0.3s;
+	font-size: 16px;
+	padding: 6px 10px;
+	border-radius: 6px;
+	transition:
+		background 0.3s,
+		color 0.3s;
 }
 
 nav a:hover {
-	color: #00b36b;
+	background-color: rgba(255, 255, 255, 0.1);
+	color: #ffd700;
 }
 
 /* ===========================================
@@ -453,5 +463,200 @@ footer a:hover {
 }
 
 .nav-user {
+	display: flex;
+	align-items: center;
+	gap: 5px;
 	color: #ecf02c;
+}
+
+.nav-list {
+	list-style: none;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 20px;
+	padding: 0 40px;
+}
+
+.nav-list li a {
+	color: #ffffff;
+	font-weight: 500;
+	font-size: 15px;
+	text-decoration: none;
+	padding: 6px 10px;
+	border-radius: 6px;
+	transition: background 0.2s ease;
+}
+
+.nav-list li a:hover {
+	background: rgba(255, 255, 255, 0.15);
+	color: #ffe600;
+}
+/* Active menu item*/
+.nav-list a.active {
+	background-color: #00b36b;
+	color: white !important;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-list a.active {
+	background-color: #00b36b;
+	color: #fff;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-menu-container {
+	position: relative;
+}
+
+.dropdown-menu {
+	display: block;
+	opacity: 0;
+	transform: translateY(-10px);
+	transition: all 0.25s ease;
+	pointer-events: none;
+	position: absolute;
+	top: 48px;
+	right: 0;
+	background: #fff;
+	border-radius: 6px;
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+	min-width: 160px;
+	overflow: hidden;
+	z-index: 10;
+}
+
+.dropdown-menu a {
+	display: block;
+	padding: 10px 15px;
+	font-size: 14px;
+	color: #333;
+	text-decoration: none;
+	transition: background 0.3s;
+}
+
+.dropdown-menu a:hover {
+	background-color: #f0f0f0;
+}
+
+/* Контейнер навигации с выравниванием */
+nav {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+/* Контейнер для пользователя: аватар, имя и меню */
+.nav-user {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	position: relative;
+	color: #ecf02c;
+	font-weight: 600;
+}
+
+.avatar-header {
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	border: 2px solid #00b36b;
+	box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+	cursor: pointer;
+	object-fit: cover;
+	transition: transform 0.3s;
+}
+
+.avatar-header:hover {
+	transform: scale(1.08);
+}
+/* Приветственный текст */
+.welcome-text {
+	color: #fff;
+	font-size: 14px;
+	margin-left: 10px;
+}
+.nav-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px 40px;
+	background: linear-gradient(90deg, #1d2c4d, #203864);
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.nav-list {
+	list-style: none;
+	display: flex;
+	gap: 20px;
+	margin: 0;
+	padding: 0;
+}
+
+.nav-list li a {
+	color: white;
+	text-decoration: none;
+	font-weight: 500;
+	padding: 6px 10px;
+	border-radius: 6px;
+	transition: background 0.3s ease;
+}
+
+.nav-list a.active {
+	background-color: #00b36b;
+	color: #fff;
+}
+
+.nav-list li a:hover {
+	background: rgba(255, 255, 255, 0.15);
+}
+
+.avatar-header {
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid #00b36b;
+	cursor: pointer;
+	transition: transform 0.3s;
+}
+
+.avatar-header:hover {
+	transform: scale(1.08);
+}
+
+.avatar-menu-container {
+	position: relative;
+}
+
+.dropdown-menu a {
+	display: block;
+	padding: 10px 16px;
+	font-size: 14px;
+	color: #333;
+	text-decoration: none;
+	transition: background 0.3s;
+}
+
+.dropdown-menu a:hover {
+	background-color: #f0f0f0;
+}
+
+.dropdown-menu.show {
+	opacity: 1;
+	transform: translateY(0);
+	pointer-events: auto;
+}
+
+.welcome-text {
+	color: white;
+	font-size: 14px;
 }

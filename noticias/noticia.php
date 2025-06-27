@@ -6,7 +6,7 @@ session_start();
 $id = $_GET['id'] ?? null;
 
 $stmt = $pdo->prepare("
-    SELECT n.*, c.nombre AS categoria, u.nombre AS autor
+    SELECT n.*, c.nombre AS categoria, u.nombre AS autor, u.avatar AS autor_avatar
     FROM noticias n
     JOIN categorias c ON n.categoria_id = c.id
     JOIN usuarios u ON n.user_id = u.id
@@ -22,7 +22,11 @@ $noticia = $stmt->fetch();
     <small>
       Categoría: <strong><?= htmlspecialchars($noticia['categoria']) ?></strong> |
       Fecha: <?= htmlspecialchars($noticia['fecha']) ?> |
-      Autor: <strong><?= htmlspecialchars($noticia['autor']) ?></strong>
+      Autor:
+      <?php if (!empty($noticia['autor_avatar']) && file_exists($noticia['autor_avatar'])): ?>
+        <img src="<?= htmlspecialchars($noticia['autor_avatar']) ?>" alt="Avatar" style="width: 24px; height: 24px; object-fit: cover; border-radius: 50%; vertical-align: middle; margin-right: 4px;">
+      <?php endif; ?>
+      <strong><?= htmlspecialchars($noticia['autor']) ?></strong>
     </small>
 
     <?php if ($noticia['imagen'] && file_exists($noticia['imagen'])): ?>
@@ -85,3 +89,4 @@ $noticia = $stmt->fetch();
 <?php endif; ?>
 
 <?php require_once "partials/footer.php"; ?>
+
